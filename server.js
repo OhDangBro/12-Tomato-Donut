@@ -22,6 +22,12 @@ const db = mysql.createConnection(
     console.log('Connected to the election database.')
   );
 
+  app.get('/', (req, res) => {
+    res.json({
+      message: 'Hello World'
+    });
+  });
+
   app.use((req, res) => {
     res.status(404).end();
   });
