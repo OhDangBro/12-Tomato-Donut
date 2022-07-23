@@ -1,6 +1,6 @@
 const express = require('express');
 const mysql = require('mysql2');
-const inputCheck = require('./utils/inputCheck');
+
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -17,7 +17,7 @@ const db = mysql.createConnection(
       user: 'root',
       // Your MySQL password
       password: 'Jessie17',
-      database: 'election'
+      database: 'company'
     },
     console.log('Connected to the election database.')
   );
