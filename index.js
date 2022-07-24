@@ -11,39 +11,39 @@ inquirer
             type: 'rawlist',
             message: 'What would You Like To Do?',
             name: 'Options',
-            choices: ['Add Department', 'Add Role', 'Add Employee', 'Add Employee' ],
+            choices: ['Add Department', 'Add Role', 'Add Employee', 'View All Departments', 'View All Roles', 'View all Employees', 'Update Employee Roles', 'QUIT'],
             validateResponse() {
-            if ('Add Department') {   
-            //     prompt([{
-            //         type: 'input',
-            // message: 'What is the name of the department?',
-            // name: 'department',
-            // validate: departmentInput => {
-            //     if (departmentInput) {
-            //       return true;
-            //     } else {
-            //       console.log('You need to enter a department name!');
-            //       return false;
-            //     }
-            //   }
+            if ('Add Department') {
 
-            //     }]);
-  
-          }
+             }
           else if ('Add Role') {
-              console.log("You are probably well informed");
+              
           }
           else if ('Add Employee') {
               console.log('GeneralPublicLicense');
           }
-          else {
-              console.log('Add Employee');
+          else if ('View All Departments') {
+            console.log('GeneralPublicLicense');
+        }
+        else if ('View All Roles') {
+            console.log('GeneralPublicLicense');
+        }
+        else if ('View All Employees') {
+            console.log('GeneralPublicLicense');
+        }
+        else if ('Update Employee Roles') {
+            console.log('GeneralPublicLicense');
+        }
+        
+          else { ////QUIT////
+              console.log('QUIT');
           }
           
         }
         
         
         },
+       
     ])};
     
       
