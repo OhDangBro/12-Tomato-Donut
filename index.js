@@ -53,7 +53,7 @@ function startProgram() {
 
       }
       if (Options === 'Add Employee') {
-        addRole();
+        addEmployee();
 
       }
       if (Options === 'Update Employee Roles') {
@@ -121,6 +121,53 @@ function viewEmployees() {
   db.query('SELECT * FROM employee', function (err, results) {
     console.log(results);
   })
+};
+
+// function to add an employee 
+addEmployee = () => {
+  inquirer.prompt([
+    {
+      type: 'input',
+      name: 'fistName',
+      message: "What is the employee's first name?",
+      validate: addFirst => {
+        if (addFirst) {
+            return true;
+        } else {
+            console.log('Please enter a first name');
+            return false;
+        }
+      }
+    },
+    {
+      type: 'input',
+      name: 'lastName',
+      message: "What is the employee's last name?",
+      validate: addLast => {
+        if (addLast) {
+            return true;
+        } else {
+            console.log('Please enter a last name');
+            return false;
+        }
+      }
+    },
+    {
+      type: 'list',
+      name: 'addEmployeRoleId',
+      message: "What is the employee's role?",
+      choices: ['DOG GROOMER', 'CAT WALKER', 'BIRD WALKER'],
+      
+    },
+    {
+      type: 'list',
+      name: 'addEmployeeMangerId',
+      message: "Which manager will be overseeing this employee?",
+      choices: ['Sam Samuels', 'Mike Michaels', 'Rob Robers'],
+      
+    },
+  ])
+    
 };
 
 ////// QUIT FUNCTION
