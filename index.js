@@ -157,8 +157,8 @@ addEmployee = () => {
       name: 'addEmployeRoleId',
       message: "What is the employee's role?",
       choices: ['DOG GROOMER', 'CAT WALKER', 'BIRD WALKER'],
-      
     },
+
     {
       type: 'list',
       name: 'addEmployeeMangerId',
@@ -167,6 +167,14 @@ addEmployee = () => {
       
     },
   ])
+  // .then((answers) => {
+  //   const { Options } = answers
+
+  //   if (Options === "View All Departments") {
+  //     ViewDepartment();
+  //   }
+    
+  // });
     
 };
 
