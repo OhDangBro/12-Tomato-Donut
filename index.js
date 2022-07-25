@@ -135,4 +135,4 @@ function quitFunction() {
 startProgram();
 
   // export PATH=${PATH}:/usr/local/mysql/bin* 
-  function map();
+  
