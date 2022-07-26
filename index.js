@@ -124,73 +124,96 @@ function viewEmployees() {
 };
 
 // function to add an employee 
+// function to add an employee 
 addEmployee = () => {
   inquirer.prompt([
     {
       type: 'input',
-      name: 'addEmployeeFirstName',
-      message: "What is the employee's first name?",
-      validate: addFirst => {
-        if (addFirst) {
+      name: 'firstNameAddEmployee',
+      message: "What is the first name of the employee you would like to add?",
+      validate: addFirstNameEmployee => {
+        if (addFirstNameEmployee) {
             return true;
         } else {
-            console.log('Please enter a first name');
+            console.log('Please enter a first name!');
             return false;
         }
       }
     },
     {
       type: 'input',
-      name: 'addEmployeeLastName',
-      message: "What is the employee's last name?",
-      validate: addLast => {
-        if (addLast) {
+      name: 'lastNameEmployeeAdd',
+      message: "What is the last name of the employee you would like to add?",
+      validate: addLastNameEmployee => {
+        if (addLastNameEmployee) {
             return true;
         } else {
-            console.log('Please enter a last name');
+            console.log('Please enter a last name!');
             return false;
         }
       }
-    },
-    {
-      type: 'list',
-      name: 'addEmployeeRoleId',
-      message: "What is the employee's role?",
-      choices: ['DOG GROOMER', 'CAT WALKER', 'BIRD WALKER'],
-      validate: addEmRoleId => {
-        if (addEmRoleId) {
-            return true;
-        } else {
-            console.log('Please enter a role ID');
-            return false;
-        }
-      }
-      
-      
-    },
-
-    {
-      type: 'list',
-      name: 'addEmployeeManagerId',
-      message: "Which manager will be overseeing this employee?",
-      choices: ['Sam Samuels', 'Mike Michaels', 'Rob Roberts'],
-      validate: addEmployeeManagerId => {
-        if (addEmployeeManagerId) {
-            return true;
-        } else {
-            console.log('Please enter a last name');
-            return false;
-        }
-      }
-      
-    },
+    }
   ])
-  .then(answer => {
-    db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id)
-    VALUES ('${answer.addEmployeeFirstName}'), ${answer.addEmployeeLastName}, ${answer.addEmployeeRoleId}, ${answer.addEmployeeManagerId};` )
-    
-    });
-  };
+    .then(answer => {
+    const params = [answer.addFirstNameEmployee, answer.addLastNameEmployee]
+
+    // grab roles from roles table
+    const roleAdd = `SELECT title, salary, department_id from roles
+`;
+  
+    db.query(roleAdd, (err, data) => {
+      if (err) throw err; 
+      
+      const rolesOptions = data.map(({ id, title }) => ({ name: title, value: id }));
+
+      inquirer.prompt([
+            {
+              type: 'list',
+              name: 'role',
+              message: "What is the employee's role?",
+              choices: rolesOptions
+            }
+          ])
+            .then(roleAnswer => {
+              const role = roleAnswer.role;
+              params.push(role);
+
+              const managerChoicesAdd = `SELECT * FROM employee`;
+
+              db.query(managerChoicesAdd, (err, data) => {
+                if (err) throw err;
+
+                const mapManagers = data.map(({ id, first_name, last_name }) => ({ name: first_name + " "+ last_name, value: id }));
+
+                // console.log(managers);
+
+                inquirer.prompt([
+                  {
+                    type: 'list',
+                    name: 'manager',
+                    message: "Who is the employee's manager?",
+                    choices: mapManagers
+                  }
+                ])
+                  .then(managerPicked => {
+                    const mapManagers = managerChoice.manager;
+                    params.push(managerPicked);
+
+                    const insertEmployee = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+                    VALUES (?, ?, ?, ?)`;
+
+                    db.query(insertEmployee, params, (err, result) => {
+                    if (err) throw err;
+                    console.log("Employee has been added!")
+
+                    showEmployees();
+              });
+            });
+          });
+        });
+     });
+  });
+};
 
   ////// UPDATE ROLE FUNCTION //////
   updateRole = () => {
@@ -245,7 +268,7 @@ addEmployee = () => {
   
                   db.query(sql, params, (err, result) => {
                     if (err) throw err;
-                  console.log("Employee Updated!");
+                  console.log("Employee has been updated!");
                 
                   viewEmployees();
             });
