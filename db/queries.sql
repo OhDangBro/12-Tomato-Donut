@@ -30,6 +30,6 @@ VALUES
 -- HOW TO UPDATE AN EMPLOYEE role_id -- 
  UPDATE employee
     SET role_id = 2
-    WHERE id = 3;
+    WHERE first_name, last_name = 3;
 
 

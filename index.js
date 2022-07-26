@@ -57,7 +57,7 @@ function startProgram() {
 
       }
       if (Options === 'Update Employee Roles') {
-        addRole();
+        updateRole();
 
       }
       if (Options === 'QUIT') {
@@ -128,7 +128,7 @@ addEmployee = () => {
   inquirer.prompt([
     {
       type: 'input',
-      name: 'fistName',
+      name: 'addEmployeeFirstName',
       message: "What is the employee's first name?",
       validate: addFirst => {
         if (addFirst) {
@@ -141,7 +141,7 @@ addEmployee = () => {
     },
     {
       type: 'input',
-      name: 'lastName',
+      name: 'addEmployeeLastName',
       message: "What is the employee's last name?",
       validate: addLast => {
         if (addLast) {
@@ -154,30 +154,99 @@ addEmployee = () => {
     },
     {
       type: 'list',
-      name: 'addEmployeRoleId',
+      name: 'addEmployeeRoleId',
       message: "What is the employee's role?",
       choices: ['DOG GROOMER', 'CAT WALKER', 'BIRD WALKER'],
+      validate: addEmRoleId => {
+        if (addEmRoleId) {
+            return true;
+        } else {
+            console.log('Please enter a role ID');
+            return false;
+        }
+      }
+      
+      
     },
 
     {
       type: 'list',
-      name: 'addEmployeeMangerId',
+      name: 'addEmployeeManagerId',
       message: "Which manager will be overseeing this employee?",
-      choices: ['Sam Samuels', 'Mike Michaels', 'Rob Robers'],
+      choices: ['Sam Samuels', 'Mike Michaels', 'Rob Roberts'],
+      validate: addEmployeeManagerId => {
+        if (addEmployeeManagerId) {
+            return true;
+        } else {
+            console.log('Please enter a last name');
+            return false;
+        }
+      }
       
     },
   ])
-  // .then((answers) => {
-  //   const { Options } = answers
-
-  //   if (Options === "View All Departments") {
-  //     ViewDepartment();
-  //   }
+  .then(answer => {
+    db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id)
+    VALUES ('${answer.addEmployeeFirstName}'), ${answer.addEmployeeLastName}, ${answer.addEmployeeRoleId}, ${answer.addEmployeeManagerId};` )
     
-  // });
-    
-};
+    });
+  };
 
+  ////// UPDATE ROLE FUNCTION //////
+  updateRole = () => {
+    inquirer.prompt([
+      {
+        type: 'input',
+        name: 'changeRoleForName',
+        message: "What is the employee's first name who's roll you would like to change??",
+        validate: changeRoleName => {
+          if (changeRoleName) {
+              return true;
+          } else {
+              console.log('Please enter a first name for an employees role you would like to change!');
+              return false;
+          }
+        }
+      },
+      {
+        type: 'input',
+        name: 'changeRoleLastName',
+        message: "What is the last name of the employee who's roll you would like to change?",
+        validate: changeRoleLastN => {
+          if (changeRoleLastN) {
+              return true;
+          } else {
+              console.log('Please enter the roll number of the employee you would like to change!');
+              return false;
+          }
+        }
+      },
+      {
+        type: 'input',
+        name: 'changeRoleTo',
+        message: "What role would you like to change the employee to, please select by number.",
+        validate: changeRole2 => {
+          if (changeRole2) {
+              return true;
+          } else {
+              console.log('Please input the employees new role ID');
+              return false;
+          }
+        }
+        
+      },
+    ])
+    .then(answer => {
+      db.query(`UPDATE employee
+      SET role_id = ${answer.changeRole2},
+      WHERE first_name, last_name = ${answer.changeRoleForName}, ('${answer.changeRoleLastName}'), ;` )
+      
+      }); 
+    
+    
+  };
+
+    
 ////// QUIT FUNCTION
 function quitFunction() {
   db.query('exit', function (err, results) {
