@@ -194,56 +194,65 @@ addEmployee = () => {
 
   ////// UPDATE ROLE FUNCTION //////
   updateRole = () => {
-    inquirer.prompt([
-      {
-        type: 'input',
-        name: 'changeRoleForName',
-        message: "What is the employee's first name who's roll you would like to change??",
-        validate: changeRoleName => {
-          if (changeRoleName) {
-              return true;
-          } else {
-              console.log('Please enter a first name for an employees role you would like to change!');
-              return false;
-          }
+    // get employees from employee table 
+    const showEmployeeForRole = `SELECT * FROM employee`;
+  
+    db.query(showEmployeeForRole, (err, data) => {
+      if (err) throw err; 
+  
+    const mapEmployees = data.map(({ id, first_name, last_name }) => ({ name: first_name + " "+ last_name, value: id }));
+  
+      inquirer.prompt([
+        {
+          type: 'list',
+          name: 'name',
+          message: "Which employee would you like to update?",
+          choices: mapEmployees
         }
-      },
-      {
-        type: 'input',
-        name: 'changeRoleLastName',
-        message: "What is the last name of the employee who's roll you would like to change?",
-        validate: changeRoleLastN => {
-          if (changeRoleLastN) {
-              return true;
-          } else {
-              console.log('Please enter the roll number of the employee you would like to change!');
-              return false;
-          }
-        }
-      },
-      {
-        type: 'input',
-        name: 'changeRoleTo',
-        message: "What role would you like to change the employee to, please select by number.",
-        validate: changeRole2 => {
-          if (changeRole2) {
-              return true;
-          } else {
-              console.log('Please input the employees new role ID');
-              return false;
-          }
-        }
-        
-      },
-    ])
-    .then(answer => {
-      db.query(`UPDATE employee
-      SET role_id = ${answer.changeRole2},
-      WHERE first_name, last_name = ${answer.changeRoleForName}, ('${answer.changeRoleLastName}'), ;` )
-      
-      }); 
-    
-    
+      ])
+        .then(Choice => {
+          const EmployeeSwitch = Choice.name;
+          const params = []; 
+          params.push(EmployeeSwitch);
+  
+          const switchRoless = `SELECT * FROM roles`;
+  
+          db.query(switchRoless, (err, data) => {
+            if (err) throw err; 
+  
+            const roleOption = data.map(({ id, title }) => ({ name: title, value: id }));
+            
+              inquirer.prompt([
+                {
+                  type: 'list',
+                  name: 'role',
+                  message: "What is the employee's new role?",
+                  choices: roleOption
+                }
+              ])
+                  .then(roleChoice => {
+                  const role3 = roleChoice.role;
+                  params.push(role3); 
+                  
+                  let employee = params[0]
+                  params[0] = role3
+                  params[1] = EmployeeSwitch
+                  
+  
+                  // console.log(params)
+  
+                  const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
+  
+                  db.query(sql, params, (err, result) => {
+                    if (err) throw err;
+                  console.log("Employee Updated!");
+                
+                  viewEmployees();
+            });
+          });
+        });
+      });
+    });
   };
 
     

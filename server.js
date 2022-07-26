@@ -32,20 +32,20 @@ const db = mysql.createConnection(
 ////////// PUT THESE TWO IN FUNCTIONS ///////////////////
 
   // Query database  // USE LATER BUT CHANGE 
-db.query('SELECT * FROM books', function (err, results) {
-    console.log(results);
-  });
+// db.query('SELECT * FROM books', function (err, results) {
+//     console.log(results);
+  // });
 // END
 
 // DYNAMIC DATA
-let deletedRow = 2;
+// let deletedRow = 2;
 
-db.query(`DELETE FROM books WHERE id = ?`, deletedRow, (err, result) => {
-  if (err) {
-    console.log(err);
-  }
-  console.log(result);
-});
+// db.query(`DELETE FROM books WHERE id = ?`, deletedRow, (err, result) => {
+//   if (err) {
+//     console.log(err);
+//   }
+//   console.log(result);
+// });
 
 //DYNAMIC DATA END
 
