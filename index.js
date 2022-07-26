@@ -5,8 +5,6 @@ const path = require('path');
 const mysql = require('mysql2');
 const app = express();
 app.use(express.json());
-var profileDataArgs = process.argv.slice(10, process.argv.length);
-var commandLineArgs = process.argv;
 const db = mysql.createConnection(
   {
     host: 'localhost',
@@ -127,12 +125,13 @@ function viewEmployees() {
 // function to add an employee 
 addEmployee = () => {
   inquirer.prompt([
+    /// Prompt to ask first name ////
     {
       type: 'input',
       name: 'firstNameAddEmployee',
       message: "What is the first name of the employee you would like to add?",
-      validate: addFirstNameEmployee => {
-        if (addFirstNameEmployee) {
+      validate: addFirst => {
+        if (addFirst) {
             return true;
         } else {
             console.log('Please enter a first name!');
@@ -141,11 +140,12 @@ addEmployee = () => {
       }
     },
     {
+      ////prompt to ask last name ///
       type: 'input',
       name: 'lastNameEmployeeAdd',
       message: "What is the last name of the employee you would like to add?",
-      validate: addLastNameEmployee => {
-        if (addLastNameEmployee) {
+      validate: addLastNamesEmployee => {
+        if (addLastNamesEmployee) {
             return true;
         } else {
             console.log('Please enter a last name!');
@@ -155,28 +155,29 @@ addEmployee = () => {
     }
   ])
     .then(answer => {
-    const params = [answer.addFirstNameEmployee, answer.addLastNameEmployee]
+    
 
-    // grab roles from roles table
+    // Selects options for add employee function
     const roleAdd = `SELECT title, salary, department_id from roles
 `;
   
     db.query(roleAdd, (err, data) => {
       if (err) throw err; 
       
-      const rolesOptions = data.map(({ id, title }) => ({ name: title, value: id }));
+      const rolesOptions = data.map(({ department_id, title }) => ({ name: title, value: department_id }));
+      console.log(rolesOptions);
 
       inquirer.prompt([
             {
               type: 'list',
-              name: 'role',
+              name: 'roles',
               message: "What is the employee's role?",
               choices: rolesOptions
             }
           ])
             .then(roleAnswer => {
-              const role = roleAnswer.role;
-              params.push(role);
+              console.log(roleAnswer);
+              // params.push(rolesOptions);
 
               const managerChoicesAdd = `SELECT * FROM employee`;
 
@@ -185,28 +186,31 @@ addEmployee = () => {
 
                 const mapManagers = data.map(({ id, first_name, last_name }) => ({ name: first_name + " "+ last_name, value: id }));
 
-                // console.log(managers);
+                
 
                 inquirer.prompt([
                   {
+                    /// prompt for asking who employees manager will be
                     type: 'list',
-                    name: 'manager',
+                    name: 'managerss',
                     message: "Who is the employee's manager?",
                     choices: mapManagers
                   }
                 ])
                   .then(managerPicked => {
-                    const mapManagers = managerChoice.manager;
-                    params.push(managerPicked);
-
+                    const mapManagers = managerPicked.manager;
+                    
+                    //// Actual querry////
                     const insertEmployee = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
-                    VALUES (?, ?, ?, ?)`;
+                    VALUES (${answer.firstNameAddEmployee}, ${answer.lastNameEmployeeAdd}, ${roleAnswer.roles}, ${managerPicked.managerss})`;
 
-                    db.query(insertEmployee, params, (err, result) => {
+                  
+
+                    db.query(insertEmployee, (err, result) => {
                     if (err) throw err;
                     console.log("Employee has been added!")
 
-                    showEmployees();
+                    viewEmployees();
               });
             });
           });
@@ -257,18 +261,18 @@ addEmployee = () => {
                   const role3 = roleChoice.role;
                   params.push(role3); 
                   
-                  let employee = params[0]
+                  let employee = params
                   params[0] = role3
                   params[1] = EmployeeSwitch
                   
   
                   // console.log(params)
   
-                  const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
+                  const upDateroleID = `UPDATE employee SET role_id = ? WHERE id = ?`;
   
-                  db.query(sql, params, (err, result) => {
+                  db.query(upDateroleID, params, (err, result) => {
                     if (err) throw err;
-                  console.log("Employee has been updated!");
+                  console.log("Employee information updated!");
                 
                   viewEmployees();
             });
