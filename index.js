@@ -163,7 +163,14 @@ addRole = () => {
             
 
             const insertRoless = `INSERT INTO roles (title, salary, department_id)
-                        VALUES (${answer.role}, ${answer.salary}, ${departmentAnswer.departments});`;
+            VALUES 
+            ('${answer.role}, ${answer.salary}, ${departmentAnswer.departments}');`
+
+//   //                      --INSERT 'value' into roles
+// INSERT INTO roles (title, salary, department_id)
+// VALUES
+// ('Fish Cleaner', 90000.00, 4);
+// --^ Inserts the values into 'roles'
 
             db.query(insertRoless, (err, result) => {
               if (err) throw err;
