@@ -110,10 +110,70 @@ addDepartment = () => {
 //// Function to add department END //////
 
 /// Function for adding role
-function addRole() {
-  db.query('SELECT * FROM department', function (err, results) {
-    console.log(results);
-  })
+addRole = () => {
+  inquirer.prompt([
+    {
+      type: 'input', 
+      name: 'role',
+      message: "What role would you like to add?",
+      validate: addRole => {
+        if (addRole) {
+            return true;
+        } else {
+            console.log('You must enter a role!');
+            return false;
+        }
+      }
+    },
+    {
+      type: 'input', 
+      name: 'salary',
+      message: "What is the salary of this role?",
+      validate: addSalary => {
+        if (addSalary) {
+            return true;
+        } else {
+            console.log('You must enter a salary!');
+            return false;
+        }
+      }
+    }
+  ])
+    .then(answer => {
+      
+
+      // grab dept from department table
+      const roleAddShow = `SELECT name, id FROM department`; 
+
+      db.query(roleAddShow, (err, data) => {
+        if (err) throw err; 
+    
+        const departmentChoice = data.map(({ name, id }) => ({ name: name, value: id }));
+
+        inquirer.prompt([
+        {
+          type: 'list', 
+          name: 'departments',
+          message: "What department will this role be in?",
+          choices: departmentChoice
+        }
+        ])
+          .then(departmentAnswer => {
+            console.log(departmentAnswer)
+            
+
+            const insertRoless = `INSERT INTO roles (title, salary, department_id)
+                        VALUES (${answer.role}, ${answer.salary}, ${departmentAnswer.departments});`;
+
+            db.query(insertRoless, (err, result) => {
+              if (err) throw err;
+              console.log('The new role has been added!'); 
+
+              viewRoles();
+       });
+     });
+   });
+ });
 };
 
 ////// Function for view roles/////
@@ -130,7 +190,7 @@ function viewEmployees() {
   })
 };
 
-// function to add an employee 
+
 // function to add an employee 
 addEmployee = () => {
   inquirer.prompt([
