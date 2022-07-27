@@ -3,6 +3,7 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const mysql = require('mysql2');
+const { start } = require('repl');
 const app = express();
 app.use(express.json());
 const db = mysql.createConnection(
@@ -35,6 +36,7 @@ function startProgram() {
       ////if choice view all department, runs viewDepartment function
       if (Options === "View All Departments") {
         ViewDepartment();
+        
       }
       //// Choice add department, runs addDepartment function
       if (Options === "Add Department") {
@@ -79,6 +81,8 @@ function startProgram() {
 function ViewDepartment() {
   db.query('SELECT * FROM department', function (err, results) {
     console.log(results);
+    startProgram();
+    
   });
 };
 /// viewDepartment function end ////
@@ -105,8 +109,11 @@ addDepartment = () => {
   db.query(`INSERT INTO department(name)
   VALUES ('${answer.departmentAdd}');` )
   ViewDepartment();
+  
+  console.log(`'New Department: ${answer.departmentAdd}, has been added!'`)
   });
 };
+
 //// Function to add department END //////
 
 /// Function for adding role
@@ -170,19 +177,23 @@ addRole = () => {
 
             db.query(insertRoless, (err, result) => {
               if (err) throw err;
-              console.log('The new role has been added!'); 
-
               viewRoles();
+              console.log(`'The new role: ${answer.role}, has been added with a salary of: ${answer.salary}  !'`); 
+              
        });
      });
    });
  });
 };
 
+/// Function end for add roles ///
+
+
 ////// Function for view roles/////
 function viewRoles() {
   db.query('SELECT * FROM roles', function (err, results) {
     console.log(results);
+    startProgram();
   })
 };
 
@@ -190,8 +201,10 @@ function viewRoles() {
 function viewEmployees() {
   db.query('SELECT * FROM employee', function (err, results) {
     console.log(results);
+    startProgram();
   })
 };
+//// VIEW ALL EMPLOYEES END////
 
 
 // function to add an employee 
@@ -272,16 +285,15 @@ addEmployee = () => {
                   .then(managerPicked => {
                     const mapManagers = managerPicked.manager;
                     
-                    //// Actual querry////
+                    //// Inserts into employee query////
                     const insertEmployee = `INSERT INTO employee (first_name,last_name,role_id, manager_id)
                     VALUES ('${answer.firstNameAddEmployee}', '${answer.lastNameEmployeeAdd}', '${roleAnswer.roles}', '${managerPicked.managerss}')`;
 
                   
-
+                    //Console log message for inserted employee///
                     db.query(insertEmployee, (err, result) => {
                     if (err) throw err;
-                    console.log("Employee has been added!")
-
+                    console.log(`"The new employee: ${answer.firstNameAddEmployee} ${answer.lastNameEmployeeAdd} has been added to the system!"`)
                     viewEmployees();
               });
             });
@@ -290,6 +302,8 @@ addEmployee = () => {
      });
   });
 };
+
+/// ADD EMPLOYEE END ////////
 
   ////// UPDATE ROLE FUNCTION //////
   updateRole = () => {
@@ -347,6 +361,8 @@ addEmployee = () => {
                   console.log("Employee information updated!");
                 
                   viewEmployees();
+                  startProgram();
+                 
             });
           });
         });
