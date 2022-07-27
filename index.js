@@ -16,7 +16,8 @@ const db = mysql.createConnection(
     multipleStatements: true
   },
 
-  console.log('Connected to the election database.')
+  console.log('Connected to the election database.'
+)
 );
 
 
@@ -31,33 +32,40 @@ function startProgram() {
       }])
     .then((answers) => {
       const { Options } = answers
-
+      ////if choice view all department, runs viewDepartment function
       if (Options === "View All Departments") {
         ViewDepartment();
       }
+      //// Choice add department, runs addDepartment function
       if (Options === "Add Department") {
         addDepartment();
       }
+      ///If choice view all roles, runs viewRoles function;
       if (Options === 'View All Roles') {
         viewRoles();
 
       }
+      // if choice Add Role, runs addRole function;
       if (Options === 'Add Role') {
         addRole();
 
       }
+      /// if choice View All Employees, runs viewEmployees function
       if (Options === 'View All Employees') {
         viewEmployees();
 
       }
+      ///if choice Add Employee, runs addEmployee function
       if (Options === 'Add Employee') {
         addEmployee();
 
       }
+      /// if choice Update Employee roles, runs updateRole function
       if (Options === 'Update Employee Roles') {
         updateRole();
 
       }
+      ///if choice QUIT, quits program
       if (Options === 'QUIT') {
         quitFunction();
 
@@ -73,6 +81,7 @@ function ViewDepartment() {
     console.log(results);
   });
 };
+/// viewDepartment function end ////
 
 ///Function to add department START ///////
 addDepartment = () => {
@@ -101,7 +110,7 @@ addDepartment = () => {
 //// Function to add department END //////
 
 /// Function for adding role
-function ViewDepartment() {
+function addRole() {
   db.query('SELECT * FROM department', function (err, results) {
     console.log(results);
   })
@@ -285,7 +294,7 @@ addEmployee = () => {
     
 ////// QUIT FUNCTION
 function quitFunction() {
-  db.query('exit', function (err, results) {
+  db.query('exit;', function (err, results) {
     console.log('Goodbye!');
   })
 };
@@ -294,5 +303,5 @@ function quitFunction() {
 
 startProgram();
 
-  // export PATH=${PATH}:/usr/local/mysql/bin* 
+  // export PATH=${PATH}:/usr/local/mysql/bin
   
