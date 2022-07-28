@@ -1,8 +1,7 @@
 # 12-Tomato-Donut
-Employee Tracker
-# ReadMe Generator
+# Employee Tracker
 ### Link: https://github.com/OhDangBro/12-Tomato-Donut
-## ![license](https://img.shields.io/badge/license-Open Source-blue)
+## Open Source
 ## Table of Contents:
 
 [Description](#description) 
